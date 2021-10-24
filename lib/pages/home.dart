@@ -8,10 +8,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isAuth = false;
+  bool isAuth = true;
 
   Widget buildAuthScreen() {
-    return Text('Authenticated');
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text('Authenticated'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => print('onpressed'),
+        child: Text('FAB'),
+      ),
+    );
   }
 
   Scaffold buildUnAuthScreen() {
