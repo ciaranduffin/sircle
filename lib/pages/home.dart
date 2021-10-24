@@ -13,7 +13,7 @@ class _HomeState extends State<Home> {
   Widget buildAuthScreen() {
     return Scaffold(
       appBar: AppBar(),
-      body: Text('Authenticated'),
+      body: Text('Authentdfdfdicated'),
       floatingActionButton: FloatingActionButton(
         onPressed: () => print('onpressed'),
         child: Text('FAB'),
