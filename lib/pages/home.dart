@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sircle/constants.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class Home extends StatefulWidget {
   @override
@@ -8,15 +11,53 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isAuth = true;
+  bool isAuth = false;
+
+  @override
+  initState() {
+    super.initState();
+    googleSignIn.onCurrentUserChanged.listen((account) {
+      handleSignIn(account);
+    }, onError: (err) {
+      print('Error signing in: $err');
+    });
+
+    //Reauthenticate user when app is reopned
+    googleSignIn
+        .signInSilently(suppressErrors: false)
+        .then((account) => handleSignIn(account))
+        .catchError((err) => print('Error signing in: $err'));
+  }
+
+  handleSignIn(GoogleSignInAccount? account) {
+    if (account != null) {
+      print('User signed in!: $account');
+      setState(() {
+        isAuth = true;
+      });
+    } else {
+      setState(() {
+        isAuth = false;
+      });
+    }
+  }
+
+  login() {
+    print('google login');
+    googleSignIn.signIn();
+  }
+
+  logout() {
+    googleSignIn.signOut();
+  }
 
   Widget buildAuthScreen() {
     return Scaffold(
       appBar: AppBar(),
-      body: Text('Authentdfdfdicated'),
+      body: Text('Authenticated'),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print('onpressed'),
-        child: Text('FAB'),
+        onPressed: logout,
+        child: Icon(Icons.logout),
       ),
     );
   }
@@ -31,7 +72,6 @@ class _HomeState extends State<Home> {
           colors: [
             ColourPalette.BlueNCS,
             ColourPalette.CaribbeanGreen,
-            // ColourPalette.MidnightEagleGreen,
             ColourPalette.OrangeYellowCrayola,
             ColourPalette.ParadisePink,
           ],
@@ -44,10 +84,13 @@ class _HomeState extends State<Home> {
             Text(
               'Sircle',
               style: TextStyle(
-                  fontFamily: "Signatra", fontSize: 60.0, color: Colors.white),
+                fontFamily: "Signatra",
+                fontSize: 60.0,
+                color: Colors.white,
+              ),
             ),
             GestureDetector(
-                onTap: () => print('ontap'),
+                onTap: login,
                 child: Container(
                   width: 260,
                   height: 60,
